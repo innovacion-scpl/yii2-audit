@@ -1,21 +1,22 @@
 **Configuración módulo Auditoría \- yii2-audit**
 
 **En composer.json:**  
-"repositories": \[  
-       {  
-           "type": "vcs",  
-           "url": "git@github.com:innovacion-scpl/yii2-audit.git"  
-       }  
-   \]
-
- "require": {  
-           "bedezign/yii2-audit": "dev-master"  
-}  
+	
+ 	"repositories": \[  
+	       {  
+	           "type": "vcs",  
+	           "url": "git@github.com:innovacion-scpl/yii2-audit.git"  
+	       }  
+	   \]
+	
+	 "require": {  
+	           "bedezign/yii2-audit": "dev-master"  
+	}  
 o la rama más actualizada
 
 **Copiar migraciones del módulo de vendor badezign/src/migrations/1.1x a console/migrations:**
 
-bedezign\\yii2\\audit\\migrations\\m150626\_000001\_create\_audit\_entry  
+	bedezign\\yii2\\audit\\migrations\\m150626\_000001\_create\_audit\_entry  
 	bedezign\\yii2\\audit\\migrations\\m150626\_000002\_create\_audit\_data  
 	bedezign\\yii2\\audit\\migrations\\m150626\_000003\_create\_audit\_error  
 	bedezign\\yii2\\audit\\migrations\\m150626\_000004\_create\_audit\_trail  
@@ -36,22 +37,22 @@ bedezign\\yii2\\audit\\migrations\\m150626\_000001\_create\_audit\_entry
 
 **En common/models/User.php agregar función:**
 
-public static function userIdentifierCallback($id)  
-   {  
-       $user \= self::findOne($id);  
-       return $user ? Html::a($user\-\>apellido.' '.$user\-\>nombre, \['/user/view', 'id' \=\> $user\-\>id\]) : $id;  
-   }
+	public static function userIdentifierCallback($id)  
+	   {  
+	       $user \= self::findOne($id);  
+	       return $user ? Html::a($user\-\>apellido.' '.$user\-\>nombre, \['/user/view', 'id' \=\> $user\-\>id\]) : $id;  
+	   }
 
 **Rastreo de cambios por modelo**
 
 **Agregar al modelo que quiere ser rastreado:**
 
-public function behaviors()  
-   {  
-       return \[  
-           'bedezign\\yii2\\audit\\AuditTrailBehavior'  
-       \];  
-   }
+	public function behaviors()  
+	   {  
+	       return \[  
+	           'bedezign\\yii2\\audit\\AuditTrailBehavior'  
+	       \];  
+	   }
 
 **Crear Rol Auditor con permiso Auditar con las rutas audit/\* y asignarlo al usuario que quiera ver la sección Auditoría**
 
