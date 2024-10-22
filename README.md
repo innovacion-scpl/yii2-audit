@@ -53,4 +53,8 @@ public function behaviors()
        \];  
    }
 
+**Crear Rol Auditor con permiso Auditar con las rutas audit/\* y asignarlo al usuario que quiera ver la sección Auditoría**
+
+**Para ingresar la ruta es *nombreDelSistema*/audit/**
+
 
