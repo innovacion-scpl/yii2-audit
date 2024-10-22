@@ -16,14 +16,14 @@ o la rama más actualizada
 
 **Copiar migraciones del módulo de vendor badezign/src/migrations/1.1x a console/migrations:**
 
-	bedezign\\yii2\\audit\\migrations\\m150626\_000001\_create\_audit\_entry  
-	bedezign\\yii2\\audit\\migrations\\m150626\_000002\_create\_audit\_data  
-	bedezign\\yii2\\audit\\migrations\\m150626\_000003\_create\_audit\_error  
-	bedezign\\yii2\\audit\\migrations\\m150626\_000004\_create\_audit\_trail  
-	bedezign\\yii2\\audit\\migrations\\m150626\_000005\_create\_audit\_javascript  
-	bedezign\\yii2\\audit\\migrations\\m150626\_000006\_create\_audit\_mail  
-	bedezign\\yii2\\audit\\migrations\\m150714\_000001\_alter\_audit\_data  
-	bedezign\\yii2\\audit\\migrations\\m170126\_000001\_alter\_audit\_mail
+	bedezign\yii2\audit\\migrations\m150626\_000001\_create\_audit\_entry  
+	bedezign\yii2\\audit\migrations\m150626\_000002\_create\_audit\_data  
+	bedezign\yii2\\audit\migrations\m150626\_000003\_create\_audit\_error  
+	bedezign\yii2\\audit\migrations\m150626\_000004\_create\_audit\_trail  
+	bedezign\yii2\\audit\migrations\m150626\_000005\_create\_audit\_javascript  
+	bedezign\yii2\\audit\migrations\m150626\_000006\_create\_audit\_mail  
+	bedezign\yii2\\audit\migrations\m150714\_000001\_alter\_audit\_data  
+	bedezign\yii2\\audit\migrations\m170126\_000001\_alter\_audit\_mail
 
 **Ejecutar ./yii migrate**
 
@@ -32,7 +32,7 @@ o la rama más actualizada
     'modules' => [  
             	'audit' => 'bedezign\yii2\audit\Audit',  
      			'accessRoles' => ['Auditor'],  
-    			'userIdentifierCallback' => ['common\models\\User', 'userIdentifierCallback'],  
+    			'userIdentifierCallback' => ['common\models\User', 'userIdentifierCallback'],  
     	],
 
 **En common/models/User.php agregar función:**
@@ -50,7 +50,7 @@ o la rama más actualizada
 	public function behaviors()  
 	   {  
 	       return [  
-	           'bedezign\yii2\\audit\AuditTrailBehavior'  
+	           'bedezign\yii2\audit\AuditTrailBehavior'  
 	       ];  
 	   }
 
