@@ -14,6 +14,8 @@
 	  }  
 o la rama más actualizada
 
+**Ejecutar php composer.phar update**
+
 **Copiar migraciones del módulo de vendor badezign/src/migrations/1.1x a console/migrations:**
 
 	bedezign\yii2\audit\\migrations\m150626\_000001\_create\_audit\_entry  
