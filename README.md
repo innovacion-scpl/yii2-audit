@@ -13,6 +13,7 @@
 	           "bedezign/yii2-audit": "dev-delete_con_campos"  
 	  }  
 o la rama más actualizada
+**Ejecutar php composer.phar update**
 
 **Copiar migraciones del módulo de vendor badezign/src/migrations/1.1x a console/migrations:**
 
