@@ -10,7 +10,7 @@
 	   ]
 	
 	 "require": {  
-	           "bedezign/yii2-audit": "dev-master"  
+	           "bedezign/yii2-audit": "dev-delete_con_campos"  
 	  }  
 o la rama más actualizada
 
