@@ -11,7 +11,7 @@
 	
 	 "require": {  
 	           "bedezign/yii2-audit": "dev-master"  
-	}  
+	  }  
 o la rama más actualizada
 
 **Copiar migraciones del módulo de vendor badezign/src/migrations/1.1x a console/migrations:**
@@ -31,8 +31,8 @@ o la rama más actualizada
 
     'modules' => [  
             	'audit' => 'bedezign\yii2\audit\Audit',  
-     			'accessRoles' => ['Auditor'],  
-    			'userIdentifierCallback' => ['common\models\User', 'userIdentifierCallback'],  
+     		'accessRoles' => ['Auditor'],  
+    		'userIdentifierCallback' => ['common\models\User', 'userIdentifierCallback'],  
     	],
 
 **En common/models/User.php agregar función:**
