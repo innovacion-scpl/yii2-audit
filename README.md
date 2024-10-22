@@ -2,12 +2,12 @@
 
 **En composer.json:**  
 	
- 	"repositories": \[  
+ 	"repositories": [  
 	       {  
 	           "type": "vcs",  
 	           "url": "git@github.com:innovacion-scpl/yii2-audit.git"  
 	       }  
-	   \]
+	   ]
 	
 	 "require": {  
 	           "bedezign/yii2-audit": "dev-master"  
