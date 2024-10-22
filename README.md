@@ -29,18 +29,18 @@ o la rama más actualizada
 
 **Agregar a backend/config/main.php:**
 
-    'modules' \=\> \[  
-            	'audit' \=\> 'bedezign\\yii2\\audit\\Audit',  
-     			'accessRoles' \=\> \['Auditor'\],  
-    			'userIdentifierCallback' \=\> \['common\\models\\User', 'userIdentifierCallback'\],  
-    	\],
+    'modules' => [  
+            	'audit' => 'bedezign\yii2\audit\Audit',  
+     			'accessRoles' => ['Auditor'],  
+    			'userIdentifierCallback' => ['common\models\\User', 'userIdentifierCallback'],  
+    	],
 
 **En common/models/User.php agregar función:**
 
 	public static function userIdentifierCallback($id)  
 	   {  
-	       $user \= self::findOne($id);  
-	       return $user ? Html::a($user\-\>apellido.' '.$user\-\>nombre, \['/user/view', 'id' \=\> $user\-\>id\]) : $id;  
+	       $user = self::findOne($id);  
+	       return $user ? Html::a($user->apellido.' '.$user->nombre, ['/user/view', 'id' => $user->id]) : $id;  
 	   }
 
 **Rastreo de cambios por modelo**
@@ -49,9 +49,9 @@ o la rama más actualizada
 
 	public function behaviors()  
 	   {  
-	       return \[  
-	           'bedezign\\yii2\\audit\\AuditTrailBehavior'  
-	       \];  
+	       return [  
+	           'bedezign\yii2\\audit\AuditTrailBehavior'  
+	       ];  
 	   }
 
 **Crear Rol Auditor con permiso Auditar con las rutas audit/\* y asignarlo al usuario que quiera ver la sección Auditoría**
