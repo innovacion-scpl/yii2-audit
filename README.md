@@ -1,65 +1,56 @@
-Configuración módulo Auditoría - yii2-audit
+**Configuración módulo Auditoría \- yii2-audit**
 
-En composer.json:
-"repositories": [
-       {
-           "type": "vcs",
-           "url": "git@github.com:innovacion-scpl/yii2-audit.git"
-       }
-   ]
+**En composer.json:**  
+"repositories": \[  
+       {  
+           "type": "vcs",  
+           "url": "git@github.com:innovacion-scpl/yii2-audit.git"  
+       }  
+   \]
 
- "require": {
-           "bedezign/yii2-audit": "dev-master"
-}
+ "require": {  
+           "bedezign/yii2-audit": "dev-master"  
+}  
 o la rama más actualizada
 
-Copiar migraciones del módulo de vendor badezign/src/migrations/1.1x a console/migrations:
+**Copiar migraciones del módulo de vendor badezign/src/migrations/1.1x a console/migrations:**
 
-bedezign\yii2\audit\migrations\m150626_000001_create_audit_entry
-	bedezign\yii2\audit\migrations\m150626_000002_create_audit_data
-	bedezign\yii2\audit\migrations\m150626_000003_create_audit_error
-	bedezign\yii2\audit\migrations\m150626_000004_create_audit_trail
-	bedezign\yii2\audit\migrations\m150626_000005_create_audit_javascript
-	bedezign\yii2\audit\migrations\m150626_000006_create_audit_mail
-	bedezign\yii2\audit\migrations\m150714_000001_alter_audit_data
-	bedezign\yii2\audit\migrations\m170126_000001_alter_audit_mail
+bedezign\\yii2\\audit\\migrations\\m150626\_000001\_create\_audit\_entry  
+	bedezign\\yii2\\audit\\migrations\\m150626\_000002\_create\_audit\_data  
+	bedezign\\yii2\\audit\\migrations\\m150626\_000003\_create\_audit\_error  
+	bedezign\\yii2\\audit\\migrations\\m150626\_000004\_create\_audit\_trail  
+	bedezign\\yii2\\audit\\migrations\\m150626\_000005\_create\_audit\_javascript  
+	bedezign\\yii2\\audit\\migrations\\m150626\_000006\_create\_audit\_mail  
+	bedezign\\yii2\\audit\\migrations\\m150714\_000001\_alter\_audit\_data  
+	bedezign\\yii2\\audit\\migrations\\m170126\_000001\_alter\_audit\_mail
 
-Ejecutar ./yii migrate
+**Ejecutar ./yii migrate**
 
-Agregar a backend/config/main.php:
+**Agregar a backend/config/main.php:**
 
-    'modules' => [
-            	'audit' => 'bedezign\yii2\audit\Audit',
-     			'accessRoles' => ['Auditor'],
-    			'userIdentifierCallback' => ['common\models\User', 'userIdentifierCallback'],
-    	],
+    'modules' \=\> \[  
+            	'audit' \=\> 'bedezign\\yii2\\audit\\Audit',  
+     			'accessRoles' \=\> \['Auditor'\],  
+    			'userIdentifierCallback' \=\> \['common\\models\\User', 'userIdentifierCallback'\],  
+    	\],
 
+**En common/models/User.php agregar función:**
 
-
-
-
-
-En common/models/User.php agregar función:
-
-public static function userIdentifierCallback($id)
-   {
-       $user = self::findOne($id);
-       return $user ? Html::a($user->apellido.' '.$user->nombre, ['/user/view', 'id' => $user->id]) : $id;
+public static function userIdentifierCallback($id)  
+   {  
+       $user \= self::findOne($id);  
+       return $user ? Html::a($user\-\>apellido.' '.$user\-\>nombre, \['/user/view', 'id' \=\> $user\-\>id\]) : $id;  
    }
 
-Rastreo de cambios por modelo
+**Rastreo de cambios por modelo**
 
-Agregar al modelo que quiere ser rastreado:
+**Agregar al modelo que quiere ser rastreado:**
 
-public function behaviors()
-   {
-       return [
-           'bedezign\yii2\audit\AuditTrailBehavior'
-       ];
+public function behaviors()  
+   {  
+       return \[  
+           'bedezign\\yii2\\audit\\AuditTrailBehavior'  
+       \];  
    }
 
-
-Crear Rol Auditor con permiso Auditar con las rutas audit/* y asignarlo al usuario que quiera ver la sección Auditoría
-
-Para ingresar la ruta es nombreDelSistema/audit/
 
