@@ -1,112 +1,66 @@
-# Yii2 Audit
+**Configuración módulo Auditoría \- yii2-audit**
 
-[![Join Chat](https://img.shields.io/badge/gitter-join%20chat-blue.svg?style=flat-square)](https://gitter.im/bedezign/yii2-audit?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Latest Version](https://img.shields.io/github/tag/bedezign/yii2-audit.svg?style=flat-square&label=release)](https://github.com/bedezign/yii2-audit/tags)
-[![Software License](https://img.shields.io/badge/license-BSD-brightgreen.svg?style=flat-square)](https://github.com/bedezign/yii2-audit/blob/master/LICENSE.md)
-[![Build Status](https://img.shields.io/travis/bedezign/yii2-audit/master.svg?style=flat-square)](https://travis-ci.org/bedezign/yii2-audit)
-[![HHVM](https://img.shields.io/hhvm/bedezign/yii2-audit.svg?style=flat-square)](http://hhvm.h4cc.de/package/bedezign/yii2-audit)
-[![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/bedezign/yii2-audit.svg?style=flat-square)](https://scrutinizer-ci.com/g/bedezign/yii2-audit/code-structure)
-[![Quality Score](https://img.shields.io/scrutinizer/g/bedezign/yii2-audit.svg?style=flat-square)](https://scrutinizer-ci.com/g/bedezign/yii2-audit)
-[![Total Downloads](https://img.shields.io/packagist/dt/bedezign/yii2-audit.svg?style=flat-square)](https://packagist.org/packages/bedezign/yii2-audit)
-[![Yii2 Framework](https://img.shields.io/badge/extension-Yii2_Framework-green.svg?style=flat-square)](http://www.yiiframework.com/extension/yii2-audit)
+**En composer.json:**  
+	
+ 	"repositories": [  
+	       {  
+	           "type": "vcs",  
+	           "url": "git@github.com:innovacion-scpl/yii2-audit.git"  
+	       }  
+	   ]
+	
+	 "require": {  
+	           "bedezign/yii2-audit": "dev-master"  
+	  }  
+o la rama más actualizada
+
+**Ejecutar php composer.phar update**
+
+**Copiar migraciones del módulo de vendor badezign/src/migrations/1.1x a console/migrations:**
+
+	bedezign\yii2\audit\\migrations\m150626\_000001\_create\_audit\_entry  
+	bedezign\yii2\\audit\migrations\m150626\_000002\_create\_audit\_data  
+	bedezign\yii2\\audit\migrations\m150626\_000003\_create\_audit\_error  
+	bedezign\yii2\\audit\migrations\m150626\_000004\_create\_audit\_trail  
+	bedezign\yii2\\audit\migrations\m150626\_000005\_create\_audit\_javascript  
+	bedezign\yii2\\audit\migrations\m150626\_000006\_create\_audit\_mail  
+	bedezign\yii2\\audit\migrations\m150714\_000001\_alter\_audit\_data  
+	bedezign\yii2\\audit\migrations\m170126\_000001\_alter\_audit\_mail
+
+**Ejecutar ./yii migrate**
+
+**Agregar a backend/config/main.php:**
+
+    'modules' => [  
+            	'audit' => 'bedezign\yii2\audit\Audit',  
+     		'accessRoles' => ['Auditor'],  
+    		'userIdentifierCallback' => ['common\models\User', 'userIdentifierCallback'],  
+    	],
+
+**En common/models/User.php agregar función:**
+
+	public static function userIdentifierCallback($id)  
+	   {  
+	       $user = self::findOne($id);  
+	       return $user ? Html::a($user->apellido.' '.$user->nombre, ['/user/view', 'id' => $user->id]) : $id;  
+	   }
+
+**Rastreo de cambios por modelo**
+
+**Agregar al modelo que quiere ser rastreado:**
+
+	public function behaviors()  
+	   {  
+	       return [  
+	           'bedezign\yii2\audit\AuditTrailBehavior'  
+	       ];  
+	   }
+
+**Crear Rol Auditor con permiso Auditar con las rutas audit/\* y asignarlo al usuario que quiera ver la sección Auditoría**
+
+**Para ingresar la ruta es *nombreDelSistema*/audit/**
 
 
-Yii2 Audit records and displays web/cli requests, database changes, php/js errors and associated data.
-
-## New stewardship from March 2024 on
-
-We (@schmunk42, @eluhr) have taken stewardship of this project. Thank you @Blizzke for adding us to the GitHub maintainer list.
-Since we are still using this extension extensively, we are focussing on backward-compatibility and improvements.
-
-## Upgrading
-
-### yii2-audit `1.2.x`
-
-Existing projects with non-namespace migrations need to include `@bedezign/yii2/audit/migrations/1.1.x` in `migrationPath and skip namespaced migrations. (Issue #271)
-
-### PHP7.2 & Yii 2.0.13 or later
-
-From `PHP 7.2` on `Object` became a reserved keyword. 
-Since enough time went by, we decided to assume everyone is on 7.2 and Yii 2.0.13 by now we won't be keeping 
-`1.0.*`-branch (pre PHP 7.2) up to date anymore. 
-
-Please use version `1.1.*` or later.
-
-## Features
-
-### Powerful, yet Simple
-
-* Installs as a simple module so it can be added without any hassle.
-* You can either track specific actions and nothing else or exclude specific routes from logging (wildcard supported).
-* View your data. The module contains a nice viewer that is automatically made available when you add it to your configuration. It has configurable permissions to limit access to this functionality by IPs, roles or users.
-
-### Minimal Footprint
-
-Tracks minimal data in the base entry:
-
-* `user_id` - User ID of the visitor (if any), based on `Yii::$app->user->id`.
-* `ip` - IP Address of the visitor.
-* `request_method` - The method used to generate the request, eg: `CLI` for console requests and `GET`, `POST`, `DELETE`, `PUT`, `PATCH`, `OPTIONS` or `HEAD` for web requests.
-* `ajax` - If the page was requested using ajax.
-* `route` - The controller and action of the request.
-* `duration` - How long the request took to serve.
-* `memory_max` - The peak memory usage during the request.
-* `created` - The datetime the entry was created.
-
-### Log Data using Configurable Panels
-
-Each panel is optional, and you can even create your own.
-
-* `RequestPanel` - Tracks all incoming web and console request data:
-  * URL Information including the route and params.
-  * PHP SuperGlobals `$_GET`, `$_POST`, `$_SERVER`, `$_FILES` and `$_COOKIES`.
-  * Headers from the Request and Response.
-* `AssetPanel` - Asset Bundles loaded for the request.
-* `ConfigPanel` - Yii and PHP configuration that was used for the request.
-* `DbPanel` - SQL queries.
-* `ErrorPanel` - Record all PHP exceptions and errors in the background.  Once logged you can configure a cron task to email the errors to a developer so issues can be fixed before they are even reported by a user. [more info](https://bedezign.github.io/yii2-audit/docs/error-panel/)
-* `JavascriptPanel` - Automatically log JavaScript errors. Errors and warning are logged automatically by including `JSLoggingAsset` asset bundle.  The javascript component also provides methods to manually add logging entries. [more info](https://bedezign.github.io/yii2-audit/docs/javascript-panel/)
-* `LogPanel` - Yii logs.
-* `MailPanel` - Emails that were sent during the request. [more info](https://bedezign.github.io/yii2-audit/docs/mail-panel/)
-* `ProfilingPanel` - Application profiling information.
-* `TrailPanel` - Database changes that were made during the request using the `AuditTrailBehavior`. [more info](https://bedezign.github.io/yii2-audit/docs/trail-panel/)
-* `ExtraDataPanel` - Extra data that you want to store. [more info](https://bedezign.github.io/yii2-audit/docs/extra-data-panel/)
-* `CurlPanel` - Track your applications cURL requests (including replies, log and headers) [more info](https://bedezign.github.io/yii2-audit/docs/curl-panel/)
-* `YourOwnPanel` - Create your own panel to capture any data you want. [more info](https://bedezign.github.io/yii2-audit/docs/custom-views-panel/)
-
-## Documentation
-
-Getting started? Try the [Installation Guide](https://bedezign.github.io/yii2-audit/docs/installation/).  You will find further information in the [Documentation](https://bedezign.github.io/yii2-audit/docs/).
-
-For changes since the last version see the [Changelog](https://github.com/bedezign/yii2-audit/blob/master/CHANGELOG.md).
-
-## Screenshots
-
-### Dashboard
-![Dashboard](https://cloud.githubusercontent.com/assets/51875/8369827/b70355ee-1bfe-11e5-9748-dd864f0500de.png)
-
-### Entry View
-![Audit Entry View](https://cloud.githubusercontent.com/assets/51875/8395061/3b004aca-1d97-11e5-8b71-6787c662ea3e.png)
-
-### More Screenshots
-
-More images are available from the [Screenshots](https://bedezign.github.io/yii2-audit/screenshots/) page.
-
-## Contributing
-
-Contributions are welcome.  Please refer to the [contributing guidelines](https://github.com/bedezign/yii2-audit/blob/master/CONTRIBUTING.md).
-
-Thanks to [everyone who has contributed](https://github.com/bedezign/yii2-audit/blob/master/CREDITS.md).
-
-## Project Resources
-
-* [Project Homepage](https://bedezign.github.io/yii2-audit/)
-* [Live Demo](https://yii2-audit.herokuapp.com/)
-* [GitHub Project](https://github.com/bedezign/yii2-audit)
-* [Yii2 Extension](http://www.yiiframework.com/extension/yii2-audit)
-* [Packagist Package](https://packagist.org/packages/bedezign/yii2-audit)
-* [Travis CI Testing](https://travis-ci.org/bedezign/yii2-audit)
-* [Scrutinizer CI Code Quality](https://scrutinizer-ci.com/g/bedezign/yii2-audit)
 
 ## License
 
