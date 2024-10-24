@@ -44,7 +44,7 @@ echo GridView::widget([
                 return Audit::getInstance()->getUserIdentifier($data->user_id);
             },
             'options'   => [
-                'width' => '150px',
+                'width' => '400px',
             ],
             'format' => 'raw',
         ],
@@ -52,13 +52,13 @@ echo GridView::widget([
             'attribute' => 'action',
             'filter'    => AuditTrailSearch::actionFilter(),
             'options'   => [
-                'width' => '150px',
+                'width' => '100px',
             ],
         ],
         [
             'attribute' => 'model',
             'options'   => [
-                'width' => '150px',
+                'width' => '100px',
             ],
         ],
         [
@@ -79,6 +79,12 @@ echo GridView::widget([
                 return $model->getDiffHtml();
             },
             'format' => 'raw',
+        ],
+        [
+            'attribute' => 'created',
+            'options'   => [
+                'width' => '100px',
+            ],
         ],
     ],
 ]);
