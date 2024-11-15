@@ -7,6 +7,7 @@ use yii\db\ActiveRecord;
 use yii\helpers\Json;
 use bedezign\yii2\audit\models\AuditTrail;
 use yii\db\Query;
+use yii\helpers\VarDumper;
 
 /**
  * Class AuditTrailBehavior
@@ -114,7 +115,7 @@ class AuditTrailBehavior extends Behavior
     public function afterDelete()
     {
         $this->audit('DELETE');
-        $this->setOldAttributes([]);
+        $this->setOldAttributes($this->owner->getAttributes());
     }
 
     /**
@@ -133,9 +134,10 @@ class AuditTrailBehavior extends Behavior
         }
         // If this is a delete then just write one row and get out of here
         if ($action == 'DELETE') {
-            $this->saveAuditTrailDelete();
+            $this->saveAuditTrailDelete($this->getOldAttributes());
             return;
         }
+        
         // Now lets actually write the attributes
         $this->auditAttributes($action);
     }
@@ -306,17 +308,30 @@ class AuditTrailBehavior extends Behavior
     /**
      * Save the audit trails for a delete action
      */
-    protected function saveAuditTrailDelete()
-    {
-        $audit = Audit::getInstance();
-        $audit->getDb()->createCommand()->insert(AuditTrail::tableName(), [
-            'action' => 'DELETE',
-            'entry_id' => $this->getAuditEntryId(),
-            'user_id' => $this->getUserId(),
-            'model' => $this->owner->className(),
-            'model_id' => $this->getNormalizedPk(),
-            'created' => date($this->dateFormat),
-        ])->execute();
+    protected function saveAuditTrailDelete($oldAttributes)
+    { 
+        $rows = array();
+        foreach ($oldAttributes as $field => $new) {
+            $old = isset($oldAttributes[$field]) ? $oldAttributes[$field] : '';
+
+            $rows[] = [$this->getAuditEntryId(), $this->getUserId(), $old, NULL, 'DELETE', get_class($this->owner), $this->getNormalizedPk(), $field, date($this->dateFormat)];
+           
+        }
+         // Record the field changes with a batch insert
+        if (!empty($rows)) {
+            $columns = ['entry_id', 'user_id', 'old_value', 'new_value', 'action', 'model', 'model_id', 'field', 'created'];
+            $audit = Audit::getInstance();
+            $audit->getDb()->createCommand()->batchInsert(AuditTrail::tableName(), $columns, $rows)->execute();
+        }
+        // $audit = Audit::getInstance();
+        // $audit->getDb()->createCommand()->insert(AuditTrail::tableName(), [
+        //     'action' => 'DELETE',
+        //     'entry_id' => $this->getAuditEntryId(),
+        //     'user_id' => $this->getUserId(),
+        //     'model' => get_class($this->owner),
+        //     'model_id' => $this->getNormalizedPk(),
+        //     'created' => date($this->dateFormat),
+        // ])->execute();
     }
 
     /**

@@ -49,7 +49,7 @@ class EntryController extends Controller
         if (isset($panels[$panel]))
             $activePanel = $panel;
         else {
-            reset($panels);
+            end($panels);
             $activePanel = key($panels);
         }
 

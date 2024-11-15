@@ -4,8 +4,11 @@ namespace bedezign\yii2\audit\models;
 
 
 use bedezign\yii2\audit\components\DbHelper;
+use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
+use yii\data\ArrayDataProvider;
+use yii\helpers\VarDumper;
 
 /**
  * AuditTrailSearch
@@ -42,7 +45,7 @@ class AuditTrailSearch extends AuditTrail
     {
         $query = $query ? $query : $this->find();
         $query->select($this->safeAttributes());
-
+        
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'sort' => [
@@ -52,13 +55,13 @@ class AuditTrailSearch extends AuditTrail
             ]
         ]);
 
+        
         // load the search form data and validate
         if (!($this->load($params) && $this->validate())) {
-            return $dataProvider;
+            return $this->changeToArrayDataProvider($dataProvider); //cambio de ActiveDataProvider a ArrayDataProvider
         }
-
+        
         // adjust the query by adding the filters
-
         $query->andFilterWhere(['id' => $this->id]);
         $query->andFilterWhere(['entry_id' => $this->entry_id]);
         $query->andFilterWhere(['user_id' => $this->user_id]);
@@ -72,7 +75,38 @@ class AuditTrailSearch extends AuditTrail
         }
         $query->andFilterWhere(['like', DbHelper::convertIfNeeded(AuditTrail::class, 'created', 'text'), $this->created]);
 
-        return $dataProvider;
+    
+        return $this->changeToArrayDataProvider($dataProvider);
+    }
+
+    public function changeToArrayDataProvider($dataProvider){
+        //Codigo para que se vean los delete y create como updates
+        $arrayDataProvider = new ArrayDataProvider([
+            'allModels' => $dataProvider->query->orderBy(['id' => SORT_DESC])->all(),
+            'pagination' => [
+                'pageSize' => 10,
+            ],
+        ]);
+        foreach ($arrayDataProvider->allModels as $key => $create) {
+        // Yii::error(VarDumper::dumpAsString([$create->field, $create->action, $create->new_value, $create->old_value]));
+        // Yii::error(VarDumper::dumpAsString($create));
+            foreach ($arrayDataProvider->allModels as $key2 => $delete) {
+                if($create->field == $delete->field && $create->action == 'CREATE' && $delete->action == 'DELETE' && $create->entry_id == $delete->entry_id && $create->model_id == $delete->model_id){
+                    $create->old_value = $delete->old_value;
+                    $create->action = 'UPDATE';
+                    unset($arrayDataProvider->allModels[$key2]);
+                }
+            }
+        
+        }
+        foreach ($arrayDataProvider->allModels as $key => $delete){
+            if($delete->new_value == $delete->old_value){
+                unset($arrayDataProvider->allModels[$key]);
+            }
+        }
+        //Fin de cambio
+        return $arrayDataProvider;
+
     }
 
     /**

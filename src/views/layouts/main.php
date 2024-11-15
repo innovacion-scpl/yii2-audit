@@ -46,7 +46,9 @@ foreach (Audit::getInstance()->panels as $panel) {
     }
     $items[] = ['label' => $panel->getName(), 'url' => $indexUrl];
 }
-
+unset($items[1]);
+unset($items[3]);
+unset($items[4]);
 echo WebHelper::bootstrap('Nav', 'widget', [
     'items' => $items,
     'options' => ['class' => 'navbar-nav'],

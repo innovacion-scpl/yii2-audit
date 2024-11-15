@@ -51,6 +51,7 @@ class AuditEntrySearch extends AuditEntry
                 ]
             ]
         ]);
+        $query->andFilterWhere(['request_method' => 'POST']);
 
         // load the search form data and validate
         if (!($this->load($params) && $this->validate())) {
